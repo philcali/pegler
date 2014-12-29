@@ -17,12 +17,6 @@ object Sprite {
   def load(bytes: Array[Byte]): Sprite = load(new ByteArrayInputStream(bytes))
 }
 
-object RGBColor {
-  val hex = "#%02x%02x%02x"
-  val rgba = "rgba(%d, %d, %d, %d)"
-  def transparent = RGBColor(0, 0 ,0, 0)
-}
-
 class Sprite(image: BufferedImage) {
   def height = image.getHeight
   def width = image.getWidth
@@ -30,14 +24,14 @@ class Sprite(image: BufferedImage) {
 }
 
 class SpriteInfo(image: BufferedImage) {
-  private val colorMap = collection.mutable.Map.empty[RGBColor, Int]
+  private val colorMap = collection.mutable.Map.empty[Color, Int]
   private val pointBuffer = collection.mutable.ListBuffer.empty[Pixel]
   private def color(rgb: Int) = {
     val c = new Color(rgb, image.getTransparency > Transparency.OPAQUE)
     if (c.getAlpha == 0) {
       RGBColor.transparent
     } else {
-      RGBColor(c.getRed, c.getGreen, c.getBlue, c.getAlpha)
+      c
     }
   }
 
@@ -57,9 +51,4 @@ class SpriteInfo(image: BufferedImage) {
   lazy val counts = colorMap.toMap
 }
 
-case class Pixel(x: Int, y: Int, color: RGBColor)
-case class RGBColor(red: Int, green: Int, blue: Int, alpha: Int) {
-  def transparent = alpha == 0
-  def hex = RGBColor.hex.format(red, green, blue)
-  override def toString = RGBColor.rgba.format(red, green, blue, alpha)
-}
+case class Pixel(x: Int, y: Int, color: Color)
