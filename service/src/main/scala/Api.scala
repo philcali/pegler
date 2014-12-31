@@ -44,7 +44,7 @@ trait Api {
         JsonContent ~>
         ResponseString(model.sprite.asJson.toString())
       }.orElse {
-        Some(NotFound ~> ResponseString(s"Sprite with id ${guid} was not found"))
+        Some(NotFound ~> ResponseString(s"Sprite named ${name} was not found."))
       }.get
     }
     val delete = for {

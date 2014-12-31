@@ -17,6 +17,9 @@ import com.amazonaws.services.s3.model.Region
 case class AppConfig(port: Int = 8080, aws: S3Config)
 
 object Server {
+  import unfiltered.oauth2.OAuthorization
+  import unfiltered.oauth2.Protection
+
   implicit def AppConfigCodec: CodecJson[AppConfig] =
     casecodec2(AppConfig.apply, AppConfig.unapply)("port", "aws")
 
@@ -39,10 +42,17 @@ object Server {
         val db = new SpriteStoreDynamo(config.aws, mapper)
 
         unfiltered.jetty.Http(config.port)
-          .filter(Planify(ApiWithUploads(db).intent))
+          .context("/oauth") {
+            _.filter(OAuthorization(oauth.PeglerAuthorization))
+          }
+          //.filter(PeglerApp)
+          .context("/api") {
+            _.filter(Protection(oauth.PeglerAuthentication))
+             .filter(Planify(ApiWithUploads(db).intent))
+          }
           .run {
             server =>
-            println(s"Server started ${s.url}")
+            println(s"Server started ${server.url}")
           }
       })
       case _ => println("Provide a valid config json")

@@ -48,7 +48,7 @@ object Build extends sbt.Build {
     base = file("app"),
     settings = Project.defaultSettings ++ Seq(
       libraryDependencies ++= Seq(
-        "net.databinder" %% "unfiltered-jetty" % "0.8.3",
+        "net.databinder" %% "unfiltered-oauth2" % "0.8.3",
         "net.databinder" %% "unfiltered-filter-uploads" % "0.8.3"
       )
     )
