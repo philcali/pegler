@@ -32,7 +32,7 @@ case class SpriteStoreDynamo(
     val s3Link = dynamo.createS3Link(
       s3config.region,
       s3config.bucket,
-      s"{owner}/{name}")
+      s"${owner}/${name}")
     val model = new SpriteModel(
       owner,
       name,

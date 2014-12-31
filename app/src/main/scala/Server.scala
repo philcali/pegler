@@ -36,13 +36,13 @@ object Server {
         config =>
         val credentials = new DefaultAWSCredentialsProviderChain()
         val mapper = new DynamoDBMapper(new AmazonDynamoDBClient(credentials), credentials)
-        val db = new SpriteStoreDynamo(S3Config("sprites"), mapper)
+        val db = new SpriteStoreDynamo(config.aws, mapper)
 
         unfiltered.jetty.Http(config.port)
           .filter(Planify(ApiWithUploads(db).intent))
           .run {
             server =>
-            println(s"Server started {s.url}")
+            println(s"Server started ${s.url}")
           }
       })
       case _ => println("Provide a valid config json")
