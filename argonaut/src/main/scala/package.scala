@@ -4,6 +4,12 @@ package json
 import argonaut._, Argonaut._
 
 package object encode {
+  implicit def SpriteLikeEncodeJson: EncodeJson[SpriteLike] =
+    EncodeJson((sprite: SpriteLike) =>
+      ("owner" := sprite.owner) ->:
+      ("name" := sprite.name) ->:
+      ("modified" := sprite.modified.getTime) ->: jEmptyObject)
+
   implicit def PixelEncodeJson: EncodeJson[Pixel] =
     EncodeJson((pixel: Pixel) =>
       ("x" := pixel.x) ->:
